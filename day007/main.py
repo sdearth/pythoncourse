@@ -16,19 +16,21 @@ display = ['-' for i in range(len(word))]
 end_of_game = False
 guesses = []
 while not end_of_game:
-    print(hangman_art.stages[lives])
-    print(f"{' '.join(display)}")
     guess = input('Guess a letter: ').lower()
+    clear()
     for idx, letter in enumerate(word):
         if guess == letter:
             display[idx] = guess
             found = True
+
     if guess in guesses:
         print(f"You've already guessed {guess}")
     else:
         if guess not in word:
             print(f"You guessed {guess}. That's not in the word. You lose a life.")
             lives -= 1
+
+        print(f"{' '.join(display)}")
 
         if lives == 0:
             print('You lose!')
@@ -37,3 +39,4 @@ while not end_of_game:
             end_of_game = True
             print('You won!')
     guesses.append(guess)
+    print(hangman_art.stages[lives])
