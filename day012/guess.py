@@ -41,3 +41,5 @@ while guesses_left > 0:
         guesses_left -= 1
         if guesses_left > 0:
             print("Guess again.")
+        else:
+            print("You've run out of guesses. You lose!")
