@@ -108,7 +108,7 @@ while wants_to_play:
         user_score = sum(user_hand)
         if user_score <= 21:
             while sum(dealer_hand) < 16:
-                dealer_hand.append(choice(cards))
+                dealer_hand.append(deal_card())
 
         dealer_score = sum(dealer_hand)
 
