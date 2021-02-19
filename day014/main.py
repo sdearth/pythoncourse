@@ -22,10 +22,7 @@ def play_round(a, b, correct_answer):
     print(logo)
     
     guess = get_guess(a, b)
-    if guess == correct_answer:
-        return True
-
-    return False
+    return guess == correct_answer
 
 def game():
     score = 0
