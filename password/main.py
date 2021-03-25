@@ -1,6 +1,7 @@
 from tkinter import *
 from tkinter import messagebox
 import random
+import json
 import pyperclip
 
 FONT_NAME = "Courier"
@@ -19,24 +20,58 @@ def gen_password():
     random.shuffle(pw_list)
     return("".join(pw_list))
 
+def search():
+    try:
+        with open("./data.json", mode="r") as file:
+            data = json.load(file)
+    except FileNotFoundError:
+        messagebox.showerror(title="No Data", message=f"no data available")
+    else:
+        search_string = web_input.get()
+        if search_string in data:
+            entry = data[search_string]
+            message = f"id is {entry['email']}\npw is {entry['password']}"
+        else:
+            message = f"No entry found for {search_string}"
+        messagebox.showerror(title="Password Info", message=message)
+    web_input.delete(0, END)
+    window.focus_force()
+    web_input.focus()
+
 def gen_pressed():
     password = gen_password()
     pw_input.insert(END, password)
     pyperclip.copy(password)
 # ---------------------------- SAVE PASSWORD ------------------------------- #
 def add_pressed():
-    url = web_input.get()
+    site = web_input.get()
     id = id_input.get()
     pw = pw_input.get()
 
-    if len(url.strip()) == 0 or len(id.strip()) == 0 or len(pw.strip()) == 0:
+    if len(site.strip()) == 0 or len(id.strip()) == 0 or len(pw.strip()) == 0:
         messagebox.showerror(title="Missing Data", message="Please fill in all fields!")
     else:
-        is_ok = messagebox.askokcancel(title=url, message="OK to save?")
+        # is_ok = messagebox.askokcancel(title=url, message="OK to save?")
+        # if is_ok:
+        new_data = {
+            site: {
+                "email": id,
+                "password": pw
+            }
+        }
 
-        if is_ok:
-            with open("./data.txt", mode="a") as file:
-                file.write(f"{url} | {id} | {pw}\n")
+        try:
+            with open("./data.json", mode="r") as file:
+                data = json.load(file)
+        except FileNotFoundError:
+            with open("./data.json", mode="w") as file:
+                json.dump(new_data, file, indent=4)
+        else:
+            data.update(new_data)
+            print(type(data))
+            with open("./data.json", mode="w") as file:
+                json.dump(data, file, indent=4)
+
         web_input.delete(0, END)
         web_input.focus()
         pw_input.delete(0, END)
@@ -53,9 +88,12 @@ canvas.grid(column=1, row=0)
 web_label = Label(text="Website:", font=(FONT_NAME, 12))
 web_label.grid(column=0, row=1)
 
-web_input = Entry(width=35)
-web_input.grid(column=1, row=1, columnspan=2)
+web_input = Entry(width=21)
+web_input.grid(column=1, row=1)
 web_input.focus()
+
+web_search = Button(text="Search", font=(FONT_NAME, 12), command=search)
+web_search.grid(column=2, row=1, sticky="nesw")
 
 id_label = Label(text="Email/Username:", font=(FONT_NAME, 12))
 id_label.grid(column=0, row=2)
