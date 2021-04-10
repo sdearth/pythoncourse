@@ -5,8 +5,8 @@ import os
 
 load_dotenv()
 
-STOCK = "TSLA"
-COMPANY_NAME = "Tesla Inc"
+STOCK = "AUDC"
+COMPANY_NAME = "Audiocodes"
 STOCK_ENDPOINT = "https://www.alphavantage.co/query"
 STOCK_FUNCTION = "TIME_SERIES_DAILY"
 
@@ -39,17 +39,17 @@ yesterday_close = float(daily_data[0]["4. close"])
 previous_day_close = float(daily_data[1]["4. close"])
 increase = yesterday_close - previous_day_close
 change = abs(increase) / yesterday_close
-
 should_get_news = change > 0.05
 
 ## STEP 2: Use https://newsapi.org
 # Instead of printing ("Get News"), actually get the first 3 news pieces for the COMPANY_NAME.
-response = requests.get(url=NEWS_ENDPOINT, params=news_parameters)
-response.raise_for_status()
-data = response.json()
-if data["totalResults"] > 0:
-    for article in data["articles"]:
-        print(article["title"])
+if should_get_news:
+    response = requests.get(url=NEWS_ENDPOINT, params=news_parameters)
+    response.raise_for_status()
+    data = response.json()
+    if data["totalResults"] > 0:
+        for article in data["articles"]:
+            print(article["title"])
 
 ## STEP 3: Use https://www.twilio.com
 # Send a seperate message with the percentage change and each article's title and description to your phone number. 
